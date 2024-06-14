@@ -11,7 +11,12 @@ const price = params.get("price")
 console.log(img)
 console.log(brand)
 
-document.addEventListener("DOMContentLoaded", async () => {
+setTimeout(getGames, 3000)
+
+async function getGames() {
+
+
+
   const response = await fetch(
     "https://striveschool-api.herokuapp.com/api/product/",
     {
@@ -24,7 +29,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const games = await response.json()
   console.log(games)
 
-  let game = ` <div class="card mb-3" ">
+  let spinner = document.querySelector(".spinner-border");
+    spinner.style.display = "none"
+
+  let game = ` <div class="card mb-3  " >
   <div class="row g-0">
     <div class="col-md-4">
       <img src=${img} class="img-fluid rounded-start" alt="...">
@@ -33,6 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <div class="card-body">
         <h5 class="card-title">${title}</h5>
         <p class="card-text">${description}</p>
+        <p class="card-text"><small class="text-body-secondary">Casa di produzione: ${brand}</small></p>
         <p class="card-text"><small class="text-body-secondary">€ ${price}</small></p>
         
       </div>
@@ -41,6 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 </div>
                   `
   document.getElementById("game").innerHTML = game
-})
+}
 
 
