@@ -29,8 +29,8 @@ async function getGames() {
   const games = await response.json()
   console.log(games)
 
-  let spinner = document.querySelector(".spinner-border");
-    spinner.style.display = "none"
+  let spinner = document.querySelector(".circle");
+  spinner.style.display = "none"
 
   let game = ` <div class="card mb-3  " >
   <div class="row g-0">
