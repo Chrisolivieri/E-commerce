@@ -5,12 +5,27 @@ fetch("https://striveschool-api.herokuapp.com/api/product/", {
     },
 }).then((response) => {
     response.json()
-    .then((games) => {
-        console.log(games)
-    })
-})
+        .then((games) => {
+            console.log(games)
+  })
+    
+} )
 
-window.onload = getGames()
+
+
+window.onload = async()=>{ 
+    getGames()
+
+let localStorage = getWithExpiry("carrello") || ""
+
+if (localStorage) {
+    carrello = localStorage
+    giochiNelCarrello = carrello.length
+    aggiornaCarrello()
+
+}
+
+}
 
 async function getGames() {
 
@@ -20,7 +35,7 @@ async function getGames() {
         }
     })
     const games = await response.json()
-    
+
 
     let gamesContainer = ""
 
@@ -57,8 +72,10 @@ async function getGames() {
 </div>
  `
         document.getElementById("games").innerHTML = gamesContainer
-    })
+    }
+    )
 }
+
 
 function addGame() {
 
@@ -183,7 +200,7 @@ function editGame2(id) {
             document.getElementById("price2").value = game.price
         })
     })
-    
+
 }
 
 
@@ -234,7 +251,7 @@ function search() {
 </div>
  `
                     }
-                    
+
                 })
                 document.getElementById("games").innerHTML = allGames
             })
@@ -251,25 +268,26 @@ function aggiungiAlCarrello(game) {
     alert("Gioco aggiunto al carrello")
     giochiNelCarrello++
     aggiornaCarrello()
-  
-  }
 
-  function aggiornaCarrello() {
+
+}
+
+function aggiornaCarrello() {
 
     let div = document.getElementById("cart")
     let number = document.getElementById("numberGame")
-  div.innerHTML = ""
-  number.innerHTML = `<span class='badge bg-secondary'>Giochi nel carrello: ${giochiNelCarrello}  </span>`
+    div.innerHTML = ""
+    number.innerHTML = `<span class='badge bg-secondary'>Giochi nel carrello: ${giochiNelCarrello}  </span>`
 
-  carrello.forEach((game) => {
-    div.innerHTML += `<div class="card m-2" style="width: 8rem;">
+    carrello.forEach((game) => {
+        div.innerHTML += `<div class="card m-2" style="width: 8rem;">
   <img src=${game.imageUrl} class="card-img-top" alt="...">
   <div class="card-body">
     <h5 class="card-title">${game.name}</h5>
     <p class="card-text">${game.price} €</p>
   </div>`
-  })
-   
+    })
+    setWitchExpiry("carrello", carrello, 10000)
 }
 
 function svuotaCarrello() {
@@ -278,5 +296,32 @@ function svuotaCarrello() {
     let div = document.getElementById("cart")
     div.innerHTML = ""
     aggiornaCarrello()
-  
-  }
+
+}
+
+function setWitchExpiry(key, value, ttl) {
+    const now = new Date()
+    const item = {
+        value: value,
+        expiry: now.getTime() + ttl
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+}
+
+function getWithExpiry(key) {
+
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+        return null
+    }
+
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+        localStorage.removeItem(key)
+        return null
+    }
+    return item.value
+}
